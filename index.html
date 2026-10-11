@@ -1,0 +1,560 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Рівняння, 3 клас</title>
+<style>
+:root{
+  --bg:#f4f8f1; --card:#ffffff; --text:#1e2a3a; --muted:#66756a;
+  --accent:#3f9a22; --teal:#1f9d86; --amber:#c98a00; --good:#1f9d55; --bad:#d94f4f; --border:#dde8d8;
+  --grad1:#7ccf3f; --grad2:#2fb68a; --grad3:#e6e552;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --bg:#0f1710; --card:#1a261c; --text:#eef7ee; --muted:#a3b8a6;
+    --accent:#9be15d; --teal:#4fd6bd; --amber:#f0c04a; --good:#3fbf76; --bad:#f16b6b; --border:#2c3f2f;
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#0f1710; --card:#1a261c; --text:#eef7ee; --muted:#a3b8a6;
+  --accent:#9be15d; --teal:#4fd6bd; --amber:#f0c04a; --good:#3fbf76; --bad:#f16b6b; --border:#2c3f2f;
+}
+*{box-sizing:border-box; -webkit-tap-highlight-color:transparent;}
+html,body{height:100%;}
+button,.tab,.pill,input{touch-action:manipulation;}
+body{
+  margin:0; color:var(--text); min-height:100%;
+  background:
+    radial-gradient(circle at 15% 0%, color-mix(in srgb, var(--grad1) 35%, transparent), transparent 55%),
+    radial-gradient(circle at 90% 10%, color-mix(in srgb, var(--grad2) 28%, transparent), transparent 50%),
+    radial-gradient(circle at 50% 100%, color-mix(in srgb, var(--grad3) 25%, transparent), transparent 55%),
+    var(--bg);
+  font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Arial,sans-serif;
+  padding-top:env(safe-area-inset-top,0px); padding-bottom:env(safe-area-inset-bottom,0px);
+  display:flex; justify-content:center;
+}
+.wrap{width:100%; max-width:480px; padding:20px 16px 40px;}
+h1{
+  font-size:26px; text-align:center; margin:8px 0 4px; font-weight:800;
+  background:linear-gradient(90deg,var(--grad1),var(--grad2));
+  -webkit-background-clip:text; background-clip:text; color:transparent;
+}
+.sub{text-align:center; color:var(--muted); font-size:15px; margin-bottom:16px;}
+.tabs{display:flex; gap:6px; margin-bottom:12px;}
+.tab{
+  flex:1; text-align:center; padding:10px 4px; border-radius:12px; min-height:54px;
+  background:var(--card); border:1px solid var(--border); cursor:pointer;
+  font-size:14.5px; font-weight:700; color:var(--muted); user-select:none; line-height:1.25;
+  display:flex; align-items:center; justify-content:center;
+}
+.tab.active{background:linear-gradient(135deg,var(--grad1),var(--grad2)); color:#fff; border-color:transparent;}
+.pills{display:flex; gap:6px; margin-bottom:10px;}
+.pill{
+  flex:1; text-align:center; padding:10px 2px; border-radius:20px; cursor:pointer; user-select:none;
+  background:var(--card); border:1px solid var(--border); font-size:14.5px; font-weight:700; color:var(--muted);
+}
+.pill.active{border-color:var(--accent); color:var(--accent); background:color-mix(in srgb, var(--accent) 14%, var(--card));}
+.stats{display:flex; justify-content:space-between; font-size:15px; padding:0 6px; margin-bottom:10px;}
+.stats span{background:var(--card); border:1px solid var(--border); border-radius:10px; padding:6px 12px; color:var(--muted);}
+.stats b{color:var(--accent); font-size:18px;}
+.card{
+  background:var(--card); border:1px solid var(--border); border-radius:18px;
+  padding:22px 18px; margin-bottom:16px; position:relative; overflow:hidden;
+  box-shadow:0 10px 30px -12px color-mix(in srgb, var(--grad2) 45%, transparent);
+}
+.card::before{content:''; position:absolute; top:0; left:0; right:0; height:5px; background:linear-gradient(90deg,var(--grad1),var(--grad2),var(--grad3));}
+.task{text-align:center; color:var(--muted); font-size:16px; margin-bottom:6px;}
+.expr{text-align:center; font-size:38px; font-weight:800; color:var(--accent); margin-bottom:16px; line-height:1.3; word-break:break-word;}
+.row{display:flex; gap:10px; margin-bottom:12px; align-items:center; justify-content:center;}
+.lbl{font-size:26px; font-weight:800; color:var(--accent);}
+input[type=number]{
+  font-size:24px; font-weight:700; padding:10px 4px; border-radius:12px; border:2px solid var(--accent); min-height:54px;
+  background:var(--bg); color:var(--text); text-align:center; width:100%; min-width:0; -moz-appearance:textfield;
+}
+input[type=number]::-webkit-outer-spin-button,input[type=number]::-webkit-inner-spin-button{-webkit-appearance:none; margin:0;}
+input.ok{border-color:var(--good); background:color-mix(in srgb, var(--good) 16%, var(--bg));}
+input.bad{border-color:var(--bad); background:color-mix(in srgb, var(--bad) 14%, var(--bg));}
+.row input{flex:0 0 auto; width:110px; min-height:48px; font-size:22px; padding:6px 4px; border-radius:10px;}
+.steplabel{font-size:15px; color:var(--muted); font-weight:700; margin:6px 0 6px; text-align:center;}
+.steprow{display:flex; gap:8px; align-items:center; justify-content:center; margin-bottom:8px; font-size:24px; font-weight:800; color:var(--accent);}
+.steprow input{flex:0 0 auto; width:88px; min-height:46px; font-size:22px; padding:6px 4px; border-radius:10px;}
+.steprow .pre-expr{white-space:nowrap;}
+.hint-small{font-size:15px; color:var(--muted); font-weight:700; margin:-2px 0 10px; text-align:center;}
+.opbox{
+  min-width:40px; height:46px; border-radius:10px; border:2px solid var(--accent); color:var(--accent);
+  display:flex; align-items:center; justify-content:center; font-size:24px; font-weight:800; background:var(--bg);
+}
+.opbox.ok{border-color:var(--good); background:color-mix(in srgb, var(--good) 16%, var(--bg));}
+.opbox.bad{border-color:var(--bad); background:color-mix(in srgb, var(--bad) 14%, var(--bg));}
+.ops{display:flex; gap:8px; margin:4px 0 14px;}
+.opbtn{
+  flex:1; min-height:54px; border-radius:12px; border:2px solid var(--border); background:var(--card);
+  color:var(--text); font-size:26px; font-weight:800;
+}
+.opbtn.sel{border-color:var(--accent); background:color-mix(in srgb, var(--accent) 16%, var(--card)); color:var(--accent);}
+button{font-family:inherit; cursor:pointer;}
+.btn-primary{
+  width:100%; min-height:54px; padding:14px 16px; border:none; border-radius:12px;
+  font-size:19px; font-weight:700; color:#fff;
+  background:linear-gradient(135deg,var(--grad1),var(--grad2)); box-shadow:0 6px 16px -6px color-mix(in srgb, var(--grad2) 60%, transparent);
+}
+.btn-secondary{
+  width:100%; min-height:50px; padding:12px 16px; margin-top:8px; border-radius:12px; font-size:17px; font-weight:700;
+  background:transparent; color:var(--accent); border:2px solid var(--accent);
+}
+.feedback{min-height:28px; text-align:center; font-weight:700; margin:12px 0 4px; font-size:19px;}
+.feedback.good{color:var(--good);} .feedback.bad{color:var(--bad);}
+.explain{
+  font-size:17px; color:var(--text); background:var(--bg); border-radius:12px; padding:12px 14px;
+  margin-top:8px; line-height:1.6; display:none; border:1px dashed var(--border); text-align:center;
+}
+.explain .rule{color:var(--muted); font-size:15px; display:block; margin-bottom:6px;}
+.explain .steps{font-weight:800; font-size:20px; display:block; color:var(--accent); white-space:pre-line;}
+.explain .side{display:block; margin-top:6px; font-size:16px; color:var(--muted); font-weight:700;}
+.explain .chk{display:block; white-space:pre-line; margin-top:6px; font-size:16px; color:var(--muted);}
+
+/* правила */
+.rule-card{
+  background:var(--card); border:1px solid var(--border); border-left:7px solid var(--accent);
+  border-radius:14px; padding:14px 16px; margin-bottom:12px;
+}
+.rule-card.c2{border-left-color:var(--teal);} .rule-card.c3{border-left-color:var(--amber);}
+.rule-card .eq{font-size:28px; font-weight:800; color:var(--accent);}
+.rule-card.c2 .eq{color:var(--teal);} .rule-card.c3 .eq{color:var(--amber);}
+.rule-card .name{font-size:18px; font-weight:800; margin:4px 0 2px;}
+.rule-card .txt{font-size:17px; color:var(--muted); line-height:1.45; overflow-wrap:break-word;}
+.rule-card .ex .side{display:block; margin-top:6px; font-size:16px; color:var(--muted); font-weight:700;}
+.rule-card .ex{margin-top:8px; font-size:19px; font-weight:700; background:var(--bg); border-radius:10px; padding:8px 10px; line-height:1.5;}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <h1>🧩 Рівняння, 3 клас</h1>
+  <div class="sub">Знайди невідоме число x</div>
+
+  <div class="tabs">
+    <div class="tab active" id="tabRules">Правила</div>
+    <div class="tab" id="tabSteps">Рівняння по кроках</div>
+    <div class="tab" id="tabPlain">Рівняння (відповідь)</div>
+  </div>
+
+  <div id="rulesView">
+    <div class="rule-card">
+      <div class="eq">x + a = b</div>
+      <div class="name">Невідомий доданок</div>
+      <div class="txt">Щоб знайти невідомий доданок, від суми віднімаємо відомий доданок.</div>
+      <div class="ex">x + 17 = 45<br>x = 45 − 17<br>x = 28</div>
+    </div>
+    <div class="rule-card">
+      <div class="eq">x − a = b</div>
+      <div class="name">Невідоме зменшуване</div>
+      <div class="txt">Щоб знайти невідоме зменшуване, до різниці додаємо від’ємник.</div>
+      <div class="ex">x − 14 = 30<br>x = 30 + 14<br>x = 44</div>
+    </div>
+    <div class="rule-card">
+      <div class="eq">a − x = b</div>
+      <div class="name">Невідомий від’ємник</div>
+      <div class="txt">Щоб знайти невідомий від’ємник, від зменшуваного віднімаємо різницю.</div>
+      <div class="ex">80 − x = 35<br>x = 80 − 35<br>x = 45</div>
+    </div>
+    <div class="rule-card c2">
+      <div class="eq">x · a = b</div>
+      <div class="name">Невідомий множник</div>
+      <div class="txt">Щоб знайти невідомий множник, добуток ділимо на відомий множник.</div>
+      <div class="ex">x · 6 = 48<br>x = 48 : 6<br>x = 8</div>
+    </div>
+    <div class="rule-card c2">
+      <div class="eq">x : a = b</div>
+      <div class="name">Невідоме ділене</div>
+      <div class="txt">Щоб знайти невідоме ділене, частку множимо на дільник.</div>
+      <div class="ex">x : 4 = 9<br>x = 9 · 4<br>x = 36</div>
+    </div>
+    <div class="rule-card c2">
+      <div class="eq">a : x = b</div>
+      <div class="name">Невідомий дільник</div>
+      <div class="txt">Щоб знайти невідомий дільник, ділене ділимо на частку.</div>
+      <div class="ex">63 : x = 7<br>x = 63 : 7<br>x = 9</div>
+    </div>
+    <div class="rule-card c3">
+      <div class="eq">x + 17 = 60 − 8</div>
+      <div class="name">Складені рівняння</div>
+      <div class="txt">Спочатку обчисли вираз праворуч (окремо) і перепиши рівняння, потім застосуй потрібне правило.</div>
+      <div class="ex">x + 17 = 60 − 8<br>x + 17 = 52<br>x = 52 − 17<br>x = 35<span class="side">Окремо: 60 − 8 = 52</span></div>
+    </div>
+  </div>
+
+  <div id="practiceView" style="display:none;">
+    <div class="pills" id="kindPills">
+      <div class="pill active" data-kind="simple">Прості</div>
+      <div class="pill" data-kind="compound">Складені</div>
+      <div class="pill" data-kind="all">Усі</div>
+    </div>
+
+    <div class="stats">
+      <span>Правильно: <b id="score">0</b></span>
+      <span>Приклад: <b id="qnum">1</b></span>
+    </div>
+
+    <div class="card">
+      <div class="task">Розв’яжи рівняння</div>
+      <div class="expr" id="expr"></div>
+
+      <div id="answerBlock">
+        <div class="row"><span class="lbl">x =</span><input type="number" id="answer" placeholder="?" inputmode="numeric"></div>
+      </div>
+
+      <div id="stepBlock" style="display:none;">
+        <div id="preBlock">
+          <div class="steplabel">Крок 1. Перепиши рівняння, обчисливши праву частину</div>
+          <div class="steprow"><span class="pre-expr" id="preExpr"></span><input type="number" id="preRes" placeholder="?" inputmode="numeric"></div>
+          <div class="hint-small" id="preHint"></div>
+        </div>
+        <div class="steplabel" id="stepLabel">Запиши розв’язок у два рядки</div>
+        <div class="steprow">
+          <span>x =</span>
+          <input type="number" id="n1" placeholder="?" inputmode="numeric">
+          <span class="opbox" id="opBox">?</span>
+          <input type="number" id="n2" placeholder="?" inputmode="numeric">
+        </div>
+        <div class="steprow">
+          <span>x =</span>
+          <input type="number" id="res" placeholder="?" inputmode="numeric">
+        </div>
+        <div class="steplabel">Обери дію</div>
+        <div class="ops" id="ops">
+          <button class="opbtn" data-op="+">+</button>
+          <button class="opbtn" data-op="−">−</button>
+          <button class="opbtn" data-op="·">·</button>
+          <button class="opbtn" data-op=":">:</button>
+        </div>
+      </div>
+
+      <button class="btn-primary" id="checkBtn">Перевірити</button>
+      <button class="btn-secondary" id="hintBtn">💡 Підказка</button>
+      <button class="btn-secondary" id="showBtn" style="display:none;">Показати розв’язок</button>
+      <div class="feedback" id="feedback"></div>
+      <div class="explain" id="explain"></div>
+      <button class="btn-secondary" id="nextBtn" style="display:none;">Наступне →</button>
+    </div>
+  </div>
+</div>
+
+<script>
+function randInt(min,max){ return Math.floor(Math.random()*(max-min+1))+min; }
+function pick(a){ return a[randInt(0,a.length-1)]; }
+const M = '−';
+
+/* Кожен генератор повертає:
+   expr, ans, rule, steps, check,
+   step: {n1, op, n2, comm}  — що має записати дитина (comm: можна поміняти числа місцями),
+   pre:  {expr, val}         — лише для складених: крок 1 */
+
+function genAddSub(L){
+  const kind = pick(['p1','p2','p1','m1','m2','m1']);
+  if(kind === 'p1' || kind === 'p2'){
+    const x = randInt(2, L-4), a = randInt(2, L-x), b = x + a;
+    return {expr:(kind === 'p1' ? 'x + '+a : a+' + x')+' = '+b, ans:x,
+      rule:'Щоб знайти невідомий доданок, від суми віднімаємо відомий доданок.',
+      steps:'x = '+b+' '+M+' '+a+' = '+x,
+      check:(kind === 'p1' ? x+' + '+a : a+' + '+x)+' = '+b,
+      step:{n1:b, op:M, n2:a, comm:false}};
+  }
+  if(kind === 'm1'){
+    const a = randInt(2, L-3), b = randInt(1, L-a), x = a + b;
+    return {expr:'x '+M+' '+a+' = '+b, ans:x,
+      rule:'Щоб знайти невідоме зменшуване, до різниці додаємо від’ємник.',
+      steps:'x = '+b+' + '+a+' = '+x,
+      check:x+' '+M+' '+a+' = '+b,
+      step:{n1:b, op:'+', n2:a, comm:true}};
+  }
+  const a = randInt(3, L), x = randInt(1, a-1), b = a - x;
+  return {expr:a+' '+M+' x = '+b, ans:x,
+    rule:'Щоб знайти невідомий від’ємник, від зменшуваного віднімаємо різницю.',
+    steps:'x = '+a+' '+M+' '+b+' = '+x,
+    check:a+' '+M+' '+x+' = '+b,
+    step:{n1:a, op:M, n2:b, comm:false}};
+}
+
+function genMulDiv(){
+  const kind = pick(['x1','x2','d1','d2']);
+  if(kind === 'x1' || kind === 'x2'){
+    const x = randInt(2,9), a = randInt(2,9), b = x*a;
+    return {expr:(kind === 'x1' ? 'x · '+a : a+' · x')+' = '+b, ans:x,
+      rule:'Щоб знайти невідомий множник, добуток ділимо на відомий множник.',
+      steps:'x = '+b+' : '+a+' = '+x,
+      check:(kind === 'x1' ? x+' · '+a : a+' · '+x)+' = '+b,
+      step:{n1:b, op:':', n2:a, comm:false}};
+  }
+  if(kind === 'd1'){
+    const a = randInt(2,9), q = randInt(2,9), x = a*q;
+    return {expr:'x : '+a+' = '+q, ans:x,
+      rule:'Щоб знайти невідоме ділене, частку множимо на дільник.',
+      steps:'x = '+q+' · '+a+' = '+x,
+      check:x+' : '+a+' = '+q,
+      step:{n1:q, op:'·', n2:a, comm:true}};
+  }
+  const x = randInt(2,9), q = randInt(2,9), a = x*q;
+  return {expr:a+' : x = '+q, ans:x,
+    rule:'Щоб знайти невідомий дільник, ділене ділимо на частку.',
+    steps:'x = '+a+' : '+q+' = '+x,
+    check:a+' : '+x+' = '+q,
+    step:{n1:a, op:':', n2:q, comm:false}};
+}
+
+function genCompound(){
+  const kind = pick(['c1','c2','c3','c4','c5','c6']);
+  if(kind === 'c1'){ // x + a = b − c
+    const x = randInt(2,60), a = randInt(2,30), R = x + a, c = randInt(2,30);
+    if(R + c > 100) return genCompound();
+    const b = R + c;
+    return {expr:'x + '+a+' = '+b+' '+M+' '+c, ans:x,
+      rule:'Спочатку знайди значення виразу праворуч, потім невідомий доданок.',
+      steps:b+' '+M+' '+c+' = '+R+';  x = '+R+' '+M+' '+a+' = '+x,
+      check:x+' + '+a+' = '+R+';  '+b+' '+M+' '+c+' = '+R,
+      pre:{expr:b+' '+M+' '+c, val:R}, step:{n1:R, op:M, n2:a, comm:false}};
+  }
+  if(kind === 'c2'){ // x − a = b + c
+    const R = randInt(5,60), a = randInt(2, 100-R), b = randInt(1,R-1), c = R - b, x = R + a;
+    return {expr:'x '+M+' '+a+' = '+b+' + '+c, ans:x,
+      rule:'Спочатку знайди значення виразу праворуч, потім невідоме зменшуване.',
+      steps:b+' + '+c+' = '+R+';  x = '+R+' + '+a+' = '+x,
+      check:x+' '+M+' '+a+' = '+R+';  '+b+' + '+c+' = '+R,
+      pre:{expr:b+' + '+c, val:R}, step:{n1:R, op:'+', n2:a, comm:true}};
+  }
+  if(kind === 'c3'){ // a − x = b + c
+    const a = randInt(10,100), R = randInt(2,a-1), b = randInt(1,R-1), c = R - b, x = a - R;
+    return {expr:a+' '+M+' x = '+b+' + '+c, ans:x,
+      rule:'Спочатку знайди значення виразу праворуч, потім невідомий від’ємник.',
+      steps:b+' + '+c+' = '+R+';  x = '+a+' '+M+' '+R+' = '+x,
+      check:a+' '+M+' '+x+' = '+R+';  '+b+' + '+c+' = '+R,
+      pre:{expr:b+' + '+c, val:R}, step:{n1:a, op:M, n2:R, comm:false}};
+  }
+  if(kind === 'c4'){ // x · a = b + c
+    const x = randInt(2,9), a = randInt(2,9), P = x*a, b = randInt(1,P-1), c = P - b;
+    return {expr:'x · '+a+' = '+b+' + '+c, ans:x,
+      rule:'Спочатку знайди значення виразу праворуч, потім невідомий множник.',
+      steps:b+' + '+c+' = '+P+';  x = '+P+' : '+a+' = '+x,
+      check:x+' · '+a+' = '+P+';  '+b+' + '+c+' = '+P,
+      pre:{expr:b+' + '+c, val:P}, step:{n1:P, op:':', n2:a, comm:false}};
+  }
+  if(kind === 'c5'){ // x : a = b − c
+    const a = randInt(2,9), q = randInt(2,9), c = randInt(1,9), b = q + c, x = a*q;
+    return {expr:'x : '+a+' = '+b+' '+M+' '+c, ans:x,
+      rule:'Спочатку знайди значення виразу праворуч, потім невідоме ділене.',
+      steps:b+' '+M+' '+c+' = '+q+';  x = '+q+' · '+a+' = '+x,
+      check:x+' : '+a+' = '+q+';  '+b+' '+M+' '+c+' = '+q,
+      pre:{expr:b+' '+M+' '+c, val:q}, step:{n1:q, op:'·', n2:a, comm:true}};
+  }
+  const x = randInt(2,9), q = randInt(2,9), c = randInt(1,9), b = q + c, a = x*q; // c6: a : x = b − c
+  return {expr:a+' : x = '+b+' '+M+' '+c, ans:x,
+    rule:'Спочатку знайди значення виразу праворуч, потім невідомий дільник.',
+    steps:b+' '+M+' '+c+' = '+q+';  x = '+a+' : '+q+' = '+x,
+    check:a+' : '+x+' = '+q+';  '+b+' '+M+' '+c+' = '+q,
+    pre:{expr:b+' '+M+' '+c, val:q}, step:{n1:a, op:':', n2:q, comm:false}};
+}
+
+function genAny(kind, L){
+  const k = kind === 'all' ? pick(['addsub','muldiv','compound'])
+          : kind === 'simple' ? pick(['addsub','muldiv']) : kind;
+  return k === 'addsub' ? genAddSub(L) : k === 'muldiv' ? genMulDiv() : genCompound();
+}
+
+/* оцінювання кроку: повертає, які поля правильні */
+function gradeStep(inp, q){
+  const e = q.step;
+  const orders = [[e.n1, e.n2]];
+  if(e.comm) orders.push([e.n2, e.n1]);
+  let best = null, bestScore = -1;
+  for(const [a,b] of orders){
+    const ok = {n1: inp.n1 === a, n2: inp.n2 === b};
+    const sc = (ok.n1?1:0) + (ok.n2?1:0);
+    if(sc > bestScore){ best = ok; bestScore = sc; }
+  }
+  return {n1:best.n1, n2:best.n2, op: inp.op === e.op, res: inp.res === q.ans};
+}
+</script>
+<script>
+const $ = id => document.getElementById(id);
+const state = {tab:'rules', kind:'simple', limit:100, score:0, qnum:1, current:null, answered:false, last:'', attempts:0, op:''};
+const fields = ['n1','n2','res','preRes'];
+
+function setHidden(el, hidden, display){ el.style.display = hidden ? 'none' : (display || 'block'); }
+
+function clearMarks(){
+  ['n1','n2','res','preRes','answer'].forEach(id => $(id).classList.remove('ok','bad'));
+  $('opBox').classList.remove('ok','bad');
+}
+function selectOp(op){
+  state.op = op;
+  $('opBox').textContent = op || '?';
+  document.querySelectorAll('.opbtn').forEach(b => b.classList.toggle('sel', b.dataset.op === op));
+}
+
+function newQuestion(){
+  let q;
+  for(let i=0;i<20;i++){ q = genAny(state.kind, state.limit); if(q.expr !== state.last) break; }
+  state.last = q.expr; state.current = q; state.answered = false; state.attempts = 0;
+  $('expr').textContent = q.expr;
+  $('qnum').textContent = state.qnum;
+  ['answer','n1','n2','res','preRes'].forEach(id => { const el = $(id); el.value = ''; el.disabled = false; });
+  clearMarks(); selectOp('');
+  document.querySelectorAll('.opbtn').forEach(b => b.disabled = false);
+  $('feedback').textContent = ''; $('feedback').className = 'feedback';
+  $('explain').style.display = 'none'; $('explain').innerHTML = '';
+  setHidden($('checkBtn'), false); $('checkBtn').textContent = 'Перевірити';
+  setHidden($('nextBtn'), true); setHidden($('showBtn'), true);
+  const steps = state.tab === 'steps';
+  setHidden($('hintBtn'), !steps);
+  setHidden($('answerBlock'), steps); setHidden($('stepBlock'), !steps);
+  if(steps){
+    setHidden($('preBlock'), !q.pre);
+    if(q.pre){ $('preExpr').textContent = q.expr.split(' = ')[0] + ' ='; $('preHint').textContent = 'Окремо порахуй: ' + q.pre.expr; }
+    $('stepLabel').textContent = q.pre ? 'Крок 2. Знайди x (у два рядки)' : 'Запиши розв’язок у два рядки';
+    (q.pre ? $('preRes') : $('n1')).focus();
+  } else {
+    $('answer').focus();
+  }
+}
+
+function buildSolution(q){
+  const parts = q.steps.split(';  ');
+  const xPart = parts[parts.length-1];
+  const m = xPart.match(/^(x = .+) = (\d+)$/);
+  const xLines = m ? [m[1], 'x = ' + m[2]] : [xPart];
+  if(q.pre){
+    const left = q.expr.split(' = ')[0];
+    return {lines:[q.expr, left + ' = ' + q.pre.val, ...xLines], side:'Окремо: ' + q.pre.expr + ' = ' + q.pre.val};
+  }
+  return {lines:xLines, side:''};
+}
+function showExplanation(q){
+  const ex = $('explain');
+  ex.innerHTML = '<span class="rule"></span><span class="steps"></span><span class="side"></span><span class="chk"></span>';
+  const sol = buildSolution(q);
+  ex.querySelector('.rule').textContent = q.rule;
+  ex.querySelector('.steps').textContent = sol.lines.join('\n');
+  ex.querySelector('.side').textContent = sol.side;
+  const chk = q.check.split(';  ')[0];
+  const val = chk.split(' = ').pop();
+  ex.querySelector('.chk').textContent = 'Перевірка: ' + chk + '\n' + val + ' = ' + val;
+  ex.style.display = 'block';
+}
+
+function lockAll(){
+  ['answer','n1','n2','res','preRes'].forEach(id => $(id).disabled = true);
+  document.querySelectorAll('.opbtn').forEach(b => b.disabled = true);
+  setHidden($('checkBtn'), true); setHidden($('hintBtn'), true); setHidden($('showBtn'), true);
+  setHidden($('nextBtn'), false);
+}
+
+function checkPlain(){
+  const q = state.current;
+  const val = parseInt($('answer').value, 10);
+  if(isNaN(val)){ $('feedback').textContent = 'Введи число'; $('feedback').className = 'feedback bad'; return; }
+  state.answered = true; lockAll();
+  if(val === q.ans){
+    state.score++; $('score').textContent = state.score;
+    $('feedback').textContent = '✅ Правильно!'; $('feedback').className = 'feedback good';
+  } else {
+    $('feedback').textContent = '❌ Правильно: x = ' + q.ans; $('feedback').className = 'feedback bad';
+  }
+  showExplanation(q);
+}
+
+function checkSteps(){
+  const q = state.current;
+  const g = id => { const v = $(id).value.trim(); return v === '' ? NaN : parseInt(v, 10); };
+  const inp = {n1:g('n1'), n2:g('n2'), res:g('res'), op:state.op};
+  const pre = q.pre ? g('preRes') : 0;
+  if(isNaN(inp.n1) || isNaN(inp.n2) || isNaN(inp.res) || isNaN(pre) || !inp.op){
+    $('feedback').textContent = 'Заповни всі поля й обери дію'; $('feedback').className = 'feedback bad';
+    return;
+  }
+  state.attempts++;
+  const r = gradeStep(inp, q);
+  const preOk = q.pre ? pre === q.pre.val : true;
+  const mark = (el, ok) => { el.classList.remove('ok','bad'); el.classList.add(ok ? 'ok' : 'bad'); };
+  mark($('n1'), r.n1); mark($('n2'), r.n2); mark($('res'), r.res); mark($('opBox'), r.op);
+  if(q.pre) mark($('preRes'), preOk);
+  if(r.n1 && r.n2 && r.op && r.res && preOk){
+    state.answered = true; lockAll();
+    if(state.attempts === 1){
+      state.score++; $('score').textContent = state.score;
+      $('feedback').textContent = '✅ Правильно!';
+    } else {
+      $('feedback').textContent = '✅ Тепер правильно!';
+    }
+    $('feedback').className = 'feedback good';
+    showExplanation(q);
+  } else {
+    $('feedback').textContent = 'Є помилка — виправ червоні поля';
+    $('feedback').className = 'feedback bad';
+    $('checkBtn').textContent = 'Перевірити ще раз';
+    setHidden($('showBtn'), false);
+  }
+}
+
+function showSolution(){
+  const q = state.current;
+  state.answered = true;
+  if(q.pre) $('preRes').value = q.pre.val;
+  $('n1').value = q.step.n1; $('n2').value = q.step.n2; $('res').value = q.ans;
+  selectOp(q.step.op);
+  clearMarks();
+  ['n1','n2','res','preRes'].forEach(id => { if(!$(id).disabled || true) $(id).classList.add('ok'); });
+  $('opBox').classList.add('ok');
+  lockAll();
+  $('feedback').textContent = 'Ось розв’язок. Спробуй наступне!'; $('feedback').className = 'feedback bad';
+  showExplanation(q);
+}
+
+function showHint(){
+  const q = state.current, ex = $('explain');
+  ex.innerHTML = '<span class="rule"></span>';
+  ex.querySelector('.rule').textContent = 'Підказка: ' + q.rule;
+  ex.style.display = 'block';
+}
+
+function checkAnswer(){
+  if(state.answered) return;
+  if(state.tab === 'steps') checkSteps(); else checkPlain();
+}
+
+function startPractice(){
+  state.score = 0; state.qnum = 1; state.last = '';
+  $('score').textContent = 0;
+  newQuestion();
+}
+function switchTab(tab){
+  state.tab = tab;
+  $('tabRules').classList.toggle('active', tab === 'rules');
+  $('tabSteps').classList.toggle('active', tab === 'steps');
+  $('tabPlain').classList.toggle('active', tab === 'plain');
+  setHidden($('rulesView'), tab !== 'rules');
+  setHidden($('practiceView'), tab === 'rules');
+  if(tab !== 'rules') startPractice();
+}
+
+$('tabRules').addEventListener('click', () => switchTab('rules'));
+$('tabSteps').addEventListener('click', () => switchTab('steps'));
+$('tabPlain').addEventListener('click', () => switchTab('plain'));
+$('checkBtn').addEventListener('click', checkAnswer);
+$('hintBtn').addEventListener('click', showHint);
+$('showBtn').addEventListener('click', showSolution);
+$('nextBtn').addEventListener('click', () => { state.qnum++; newQuestion(); });
+$('answer').addEventListener('keydown', e => { if(e.key === 'Enter') checkAnswer(); });
+['n1','n2','res','preRes'].forEach(id => $(id).addEventListener('input', () => $(id).classList.remove('ok','bad')));
+document.querySelectorAll('.opbtn').forEach(b => b.addEventListener('click', () => {
+  if(state.answered) return;
+  selectOp(b.dataset.op); $('opBox').classList.remove('ok','bad');
+}));
+document.querySelectorAll('#kindPills .pill').forEach(p => p.addEventListener('click', () => {
+  document.querySelectorAll('#kindPills .pill').forEach(x => x.classList.remove('active'));
+  p.classList.add('active'); state.kind = p.dataset.kind; startPractice();
+}));
+
+switchTab('rules');
+</script>
+</body>
+</html>
